@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("db.php"); // your database connection
+include("db.php");
 
 $error = "";
 $success = "";
@@ -21,15 +21,16 @@ if(isset($_POST['create_account'])){
         if(mysqli_num_rows($check) > 0){
             $error = "Username or Email already exists!";
         } else {
-            // Hash the password
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            // Insert directly without hashing
+            $insert = mysqli_query($conn, "
+                INSERT INTO users (username, email, password, role)
+                VALUES ('$username','$email','$password','student')
+            ");
 
-            // Insert into database
-            $insert = mysqli_query($conn, "INSERT INTO users (username, email, password) VALUES ('$username','$email','$hashed_password')");
             if($insert){
                 $success = "Account created successfully! <a href='login.php'>Login here</a>.";
             } else {
-                $error = "Failed to create account. Please try again.";
+                $error = "Failed to create account. Please check your database.";
             }
         }
     }
@@ -42,56 +43,49 @@ if(isset($_POST['create_account'])){
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Create Account</title>
-
 <style>
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     margin:0;
     padding:0;
     height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    background: url('images/library-bg.jpg') no-repeat center center/cover;
+    background: #f3f3f3;
 }
 
 .register-box {
-    background: rgba(255,255,255,0.95);
-    padding:40px;
-    border-radius:15px;
-    box-shadow:0 8px 20px rgba(0,0,0,0.3);
-    width:350px;
+    background: white;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    width: 350px;
     text-align:center;
 }
 
 .register-box h2 {
-    color:#4a148c;
-    margin-bottom:20px;
+    color: #4a148c;
+    margin-bottom: 20px;
 }
 
 .register-box input {
-    width:100%;
-    padding:12px 15px;
-    margin:10px 0;
+    width: 100%;
+    padding: 12px 10px;
+    margin: 10px 0;
     border:1px solid #ccc;
     border-radius:8px;
-    outline:none;
-}
-
-.register-box input:focus {
-    border-color:#6a1b9a;
-    box-shadow:0 0 5px rgba(106,27,154,0.5);
 }
 
 .register-box button {
-    width:100%;
+    width: 100%;
     padding:12px;
     margin-top:15px;
     border:none;
     border-radius:8px;
     background:#6a1b9a;
     color:white;
-    font-size:16px;
+    font-weight:bold;
     cursor:pointer;
 }
 
@@ -99,16 +93,8 @@ body {
     background:#4a148c;
 }
 
-.error {
-    color:red;
-    margin-top:10px;
-}
-
-.success {
-    color:green;
-    margin-top:10px;
-    font-size:14px;
-}
+.error { color:red; margin-top:10px; }
+.success { color:green; margin-top:10px; }
 </style>
 </head>
 <body>
@@ -126,12 +112,11 @@ body {
     <?php if($error != "") { ?>
         <div class="error"><?php echo $error; ?></div>
     <?php } ?>
-
     <?php if($success != "") { ?>
         <div class="success"><?php echo $success; ?></div>
     <?php } ?>
 
-    <p style="margin-top:15px;">Already have an account? <a href="login.php">Login</a></p>
+    <p style="margin-top:15px;">Already have an account? <a href="login.php">Login here</a></p>
 </div>
 
 </body>
