@@ -10,6 +10,8 @@ include("db.php");
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Library Home</title>
 
+<link rel="stylesheet" href="Asset/style.css" />
+
 <style>
 /* FULL SCREEN BACKGROUND */
 body, html {
@@ -20,7 +22,7 @@ body, html {
 }
 
 .background {
-    background: url('images/library-bg.jpg') no-repeat center center/cover;
+    background: url('img/library.jpg') no-repeat center center/cover;
     height:100%;
     display:flex;
     justify-content:center;

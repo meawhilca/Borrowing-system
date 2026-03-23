@@ -154,6 +154,7 @@ $result = mysqli_query($conn,"SELECT * FROM books");
                 <td><?php echo $row['quantity']; ?></td>
                 <td>
                     <a class="view-btn" href="borrow1.php?id=<?php echo $row['id']; ?>">Borrow</a>
+                    <a class="view-btn" href="return.php?id=<?php echo $row['id']; ?>">Return</a>
                 </td>
             </tr>
             <?php endwhile; ?>
