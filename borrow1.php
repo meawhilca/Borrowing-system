@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("db.php"); // or config.php depending on your setup
+include("db.php");
 
 // Check if user is logged in
 if(!isset($_SESSION['username'])){
@@ -38,14 +38,13 @@ if($book['quantity'] <= 0){
 $new_quantity = $book['quantity'] - 1;
 $update_query = mysqli_query($conn, "UPDATE books SET quantity=$new_quantity WHERE id=$book_id");
 
-// Optional: Insert into borrow_records table (if you have one)
+// Insert into borrow_records
 $borrow_query = mysqli_query($conn, "INSERT INTO borrow_records (username, book_id, borrow_date) VALUES ('{$_SESSION['username']}', $book_id, NOW())");
 
 if($update_query && $borrow_query){
     echo "<h3>You have successfully borrowed '{$book['title']}'.</h3>";
+    
+    // ✅ GO BACK BUTTON
     echo "<a href='index.php'>Go Back to Books</a>";
-} else {
-    echo "<h3>Failed to borrow the book. Please try again.</h3>";
-    echo "<a href='index.php'>Go Back</a>";
 }
 ?>

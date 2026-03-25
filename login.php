@@ -8,18 +8,30 @@ if(isset($_POST['login'])) {
 
     $username = mysqli_real_escape_string($conn,$_POST['username']);
     $password = mysqli_real_escape_string($conn,$_POST['password']);
+    $role = mysqli_real_escape_string($conn,$_POST['role']);
 
-    $query = "SELECT * FROM users WHERE username='$username' AND password='$password'";
+    $query = "SELECT * FROM users 
+              WHERE username='$username' 
+              AND password='$password' 
+              AND role='$role'";
+
     $result = mysqli_query($conn,$query);
 
     if(mysqli_num_rows($result) == 1) {
 
         $_SESSION['username'] = $username;
-        header("Location: dashboard.php");
+        $_SESSION['role'] = $role;
+
+        // Redirect based on role
+        if($role == "librarian"){
+            header("Location:  librarian_dashboard.php");
+        } else {
+            header("Location:  students_dashboard.php");
+        }
         exit();
 
     } else {
-        $error = "Invalid Username or Password!";
+        $error = "Invalid Username, Password, or Role!";
     }
 }
 ?>
@@ -58,7 +70,8 @@ body {
     color: #4a148c;
 }
 
-.login-box input {
+.login-box input,
+.login-box select {
     width: 100%;
     padding: 12px;
     margin: 10px 0;
@@ -100,6 +113,12 @@ body {
 
 <input type="text" name="username" placeholder="Username" required>
 <input type="password" name="password" placeholder="Password" required>
+
+<select name="role" required>
+    <option value="">Select Role</option>
+    <option value="student">Student</option>
+    <option value="librarian">Librarian</option>
+</select>
 
 <button type="submit" name="login">Login</button>
 
