@@ -10,10 +10,10 @@ if(isset($_POST['register'])){
     $username = trim($_POST['username']);
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
-    $role = trim($_POST['role']);
+
 
     // Validate
-    if(empty($username) || empty($email) || empty($password) || empty($role)){
+    if(empty($username) || empty($email) || empty($password) ){
         $message = "<div class='error'>All fields are required!</div>";
     } else {
 
@@ -31,8 +31,8 @@ if(isset($_POST['register'])){
         
 
             // Insert user
-            $stmt = $conn->prepare("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("ssss", $username, $email,$password, $role);
+            $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?, ?)");
+            $stmt->bind_param("ssss", $username, $email,$password);
 
             if($stmt->execute()){
                 $message = "<div class='message'>Account created successfully!</div>";
@@ -131,7 +131,7 @@ body {
 <select name="role" required>
     <option value="">Select Role</option>
     <option value="student">Student</option>
-    <option value="librarian">Librarian</option>
+    
 </select>
 
 <button type="submit" name="register">Create Account</button>

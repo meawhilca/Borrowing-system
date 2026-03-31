@@ -1,7 +1,12 @@
 <?php
 session_start();
-include("db.php");
+include(__DIR__ . "/../db.php");
 
+
+if(!isset($_SESSION['role']) || $_SESSION['role'] != 'librarian'){
+    header("Location: login.php");
+    exit();
+}
 // 🔐 Check login
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
@@ -9,7 +14,7 @@ if (!isset($_SESSION['username'])) {
 }
 
 // 🔒 Only admin/librarian
-if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'librarian') {
     echo "<h3>Access denied. Librarians only.</h3>";
     exit();
 }

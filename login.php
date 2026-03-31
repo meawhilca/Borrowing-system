@@ -24,9 +24,9 @@ if(isset($_POST['login'])) {
 
         // Redirect based on role
         if($role == "librarian"){
-            header("Location:  librarian_dashboard.php");
+            header("Location: librarian/librarian_dashboard.php");
         } else {
-            header("Location:  students_dashboard.php");
+            header("Location: student/students_dashboard.php");
         }
         exit();
 

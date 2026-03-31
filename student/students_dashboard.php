@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("db.php");
+include("../db.php");
 
 // 🔐 Check login
 if (!isset($_SESSION['username'])) {
@@ -8,7 +8,7 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
-// 🔒 Check if role exists first
+// 🔒 Check role
 if (!isset($_SESSION['role'])) {
     echo "<h3>Session error. Please login again.</h3>";
     echo "<a href='login.php'>Go Back</a>";
@@ -30,37 +30,30 @@ if ($_SESSION['role'] !== 'student') {
 
     <style>
         body {
+            margin: 0;
             font-family: Arial;
-            background: #f4f4f4;
-            text-align: center;
-            padding: 50px;
+            display: flex;
         }
 
-        .box {
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left: 220px;
+            padding: 40px;
+            width: 100%;
+            background: #f4f4f4;
+            min-height: 100vh;
+        }
+
+        .card {
             background: white;
             padding: 30px;
             border-radius: 10px;
-            width: 400px;
-            margin: auto;
             box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            max-width: 500px;
         }
 
         h2 {
             color: #6a1b9a;
-        }
-
-        a {
-            display: block;
-            margin: 15px 0;
-            padding: 12px;
-            background: #6a1b9a;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-
-        a:hover {
-            background: #4a148c;
         }
 
         .top-bar {
@@ -68,24 +61,44 @@ if ($_SESSION['role'] !== 'student') {
             font-size: 14px;
             color: #555;
         }
+
+        .button {
+            display: inline-block;
+            margin-top: 10px;
+            margin-right: 10px;
+            padding: 10px 20px;
+            background: #6a1b9a;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .button:hover {
+            background: #4a148c;
+        }
     </style>
 </head>
 <body>
 
-<div class="box">
+<!-- ✅ INCLUDE SIDEBAR -->
+<?php include("students_sidebar.php"); ?>
+
+<!-- ✅ MAIN CONTENT -->
+<div class="main-content">
 
     <div class="top-bar">
         Logged in as: <strong><?php echo $_SESSION['username']; ?></strong> |
         Role: <strong><?php echo $_SESSION['role']; ?></strong>
     </div>
 
-    <h2>🎓 Student Dashboard</h2>
+    <div class="card">
+        <h2>🎓 Student Dashboard</h2>
 
-    <p>Welcome, <strong><?php echo $_SESSION['username']; ?></strong>!</p>
+        <p>Welcome, <strong><?php echo $_SESSION['username']; ?></strong>!</p>
 
-    <a href="books.php">📚 View Books</a>
-    <a href="mybooks.php">📖 My Borrowed Books</a>
-    <a href="logout.php">🚪 Logout</a>
+        <a class="button" href="books.php">📚 View Books</a>
+        <a class="button" href="mybooks.php">📖 My Borrowed Books</a>
+    </div>
 
 </div>
 
