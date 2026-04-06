@@ -10,14 +10,14 @@ if(isset($_POST['register'])){
     $username = trim($_POST['username']);
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
-
+    $role = $_POST['role'];
 
     // Validate
-    if(empty($username) || empty($email) || empty($password) ){
+    if(empty($username) || empty($email) || empty($password) || empty($role)){
         $message = "<div class='error'>All fields are required!</div>";
     } else {
 
-        // Check if username or email already exists
+        // Check existing user
         $check = $conn->prepare("SELECT * FROM users WHERE username=? OR email=?");
         $check->bind_param("ss", $username, $email);
         $check->execute();
@@ -28,11 +28,9 @@ if(isset($_POST['register'])){
         } else {
 
 
-        
-
-            // Insert user
-            $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("ssss", $username, $email,$password);
+            // ✅ FIXED INSERT
+            $stmt = $conn->prepare("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)");
+            $stmt->bind_param("ssss", $username, $email, $password, $role);
 
             if($stmt->execute()){
                 $message = "<div class='message'>Account created successfully!</div>";
@@ -55,7 +53,7 @@ if(isset($_POST['register'])){
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: url('https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+    background: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f') no-repeat center center fixed;
     background-size: cover;
     display: flex;
     justify-content: center;
@@ -131,7 +129,6 @@ body {
 <select name="role" required>
     <option value="">Select Role</option>
     <option value="student">Student</option>
-    
 </select>
 
 <button type="submit" name="register">Create Account</button>

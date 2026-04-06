@@ -1,93 +1,160 @@
-/* Reset */
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* Body background */
-body{
-    font-family: Arial, Helvetica, sans-serif;
-    background: url("img/Library.jpg");
-    background-size: cover;
-    background-position: center;
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+body {
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    background: #eef1f7;
 }
 
-/* Login Box */
-.login-box{
-    width:350px;
-    background:rgba(255,255,255,0.9);
-    padding:40px;
-    border-radius:15px;
-    text-align:center;
-    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+/* SIDEBAR */
+.sidebar {
+    width: 240px;
+    background: #4a148c;
+    color: white;
+    height: 100vh;
+    padding: 20px;
+    position: fixed;
 }
 
-/* Title */
-.login-box h2{
-    margin-bottom:25px;
-    color:#4a148c;
+.logo h2 {
+    margin-bottom: 5px;
 }
 
-/* Inputs */
-.login-box input{
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border:1px solid #ccc;
-    border-radius:8px;
-    font-size:14px;
+.logo p {
+    font-size: 12px;
+    opacity: 0.8;
 }
 
-/* Button */
-.login-box button{
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    border:none;
-    border-radius:8px;
-    background:#6a1b9a;
-    color:white;
-    font-size:16px;
-    cursor:pointer;
-    transition:0.3s;
+.user {
+    margin: 25px 0;
+    text-align: center;
 }
 
-.login-box button:hover{
-    background:#4a148c;
+.user span {
+    font-size: 40px;
 }
 
-/* Error message */
-.error{
-    color:red;
-    margin-top:10px;
+.user p {
+    margin-top: 5px;
+    font-size: 14px;
 }
 
-/* Dashboard Table */
-table{
-    border-collapse:collapse;
-    width:80%;
-    margin:auto;
-    margin-top:40px;
+/* NAV */
+.sidebar nav a {
+    display: block;
+    padding: 12px;
+    margin: 6px 0;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: 0.3s;
 }
 
-table th{
-    background:#6a1b9a;
-    color:white;
-    padding:10px;
+.sidebar nav a:hover {
+    background: rgba(255,255,255,0.2);
 }
 
-table td{
-    padding:10px;
-    text-align:center;
-    border:1px solid #ddd;
+.sidebar nav .active {
+    background: white;
+    color: #4a148c;
+    font-weight: bold;
 }
 
-table tr:nth-child(even){
-    background:#f2f2f2;
+.logout {
+    margin-top: 20px;
+    background: #e53935;
+}
+
+/* MAIN CONTENT */
+.main-content {
+    margin-left: 240px;
+    padding: 30px;
+    width: 100%;
+}
+
+/* TITLE */
+h1 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* CARDS */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.card h3 {
+    color: #6a1b9a;
+    font-size: 16px;
+}
+
+.card p {
+    font-size: 26px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* TABLE */
+h2 {
+    margin-bottom: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+table th {
+    background: #6a1b9a;
+    color: white;
+    padding: 12px;
+}
+
+table td {
+    padding: 12px;
+    text-align: center;
+}
+
+table tr:nth-child(even) {
+    background: #f7f7f7;
+}
+
+table tr:hover {
+    background: #ececec;
+}
+
+/* STATUS BADGE */
+.badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    color: white;
+    font-size: 12px;
+}
+
+.borrowed {
+    background: orange;
+}
+
+.returned {
+    background: green;
 }
 

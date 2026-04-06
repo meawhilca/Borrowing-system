@@ -113,14 +113,14 @@ $records = mysqli_query($conn,
             <td><?php echo $row['book_title']; ?></td>
 
             <!-- ✅ STATUS LOGIC -->
-            <td>
-                <?php 
-                if ($row['return_date'] == NULL) {
-                    echo "<span style='color:orange;'>Borrowed</span>";
-                } else {
-                    echo "<span style='color:green;'>Returned</span>";
-                }
-                ?>
+           <td>
+           <?php 
+               if ($row['return_date'] == NULL) {
+                     echo "<span class='badge borrowed'>Borrowed</span>";
+               } else {
+                     echo "<span class='badge returned'>Returned</span>";
+                    }
+            ?>
             </td>
 
             <!-- ✅ DATE -->

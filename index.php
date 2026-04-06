@@ -23,7 +23,7 @@ body, html {
 }
 
 .background {
-    background: url('img/library.jpg') no-repeat center center/cover;
+    background: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f') no-repeat center center/cover;
     height:100%;
     display:flex;
     justify-content:center;
@@ -107,7 +107,8 @@ body, html {
         <h1>📚 Welcome to Our Library</h1>
         <p>Access books, borrow easily, and manage your reading.</p>
         <a class="button" href="login.php">Login</a>
-        <a class="button" href="register.php">Create Account</a>
+        <a class="button" href="register.php">Create Account</a>>
+    
     </div>
 </div>
 

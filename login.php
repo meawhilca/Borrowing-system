@@ -47,7 +47,7 @@ if(isset($_POST['login'])) {
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: url('https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+    background: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f') no-repeat center center fixed;
     background-size: cover;
     display: flex;
     justify-content: center;
@@ -57,11 +57,11 @@ body {
 }
 
 .login-box {
-    background: rgba(255,255,255,0.85);
+    background: rgba(214, 194, 233, 0.85);
     padding: 40px;
     border-radius: 20px;
     box-shadow: 0px 10px 25px rgba(0,0,0,0.3);
-    width: 350px;
+    width: 450px;
     text-align: center;
 }
 

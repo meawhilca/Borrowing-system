@@ -11,7 +11,7 @@ if (!isset($_SESSION['username'])) {
 // 🔒 Check role
 if (!isset($_SESSION['role'])) {
     echo "<h3>Session error. Please login again.</h3>";
-    echo "<a href='login.php'>Go Back</a>";
+    echo "<a href='students_dashboard.php'>Go Back</a>";
     exit();
 }
 
@@ -37,8 +37,8 @@ if ($_SESSION['role'] !== 'student') {
 
         /* MAIN CONTENT */
         .main-content {
-            margin-left: 220px;
-            padding: 40px;
+            margin-left: 300px;
+            padding: 100px;
             width: 100%;
             background: #f4f4f4;
             min-height: 100vh;
@@ -58,8 +58,9 @@ if ($_SESSION['role'] !== 'student') {
 
         .top-bar {
             margin-bottom: 20px;
-            font-size: 14px;
-            color: #555;
+            font-size: 25px;
+            shadow: 25px
+            color: #a047b6;
         }
 
         .button {
@@ -96,7 +97,7 @@ if ($_SESSION['role'] !== 'student') {
 
         <p>Welcome, <strong><?php echo $_SESSION['username']; ?></strong>!</p>
 
-        <a class="button" href="books.php">📚 View Books</a>
+        <a class="button" href="view_books.php">📚 View Books</a>
         <a class="button" href="mybooks.php">📖 My Borrowed Books</a>
     </div>
 
