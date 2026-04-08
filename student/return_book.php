@@ -18,29 +18,30 @@ $username = $_SESSION['username'];
 $message = "";
 
 // 📌 RETURN BOOK
-if(isset($_GET['return_id'])){
+if(isset($_GET['return_username'])){
+    $borrow_id = $_GET['return_username'];
 
-    $borrow_id = $_GET['return_id'];
+    // Get book record first
+    $get = mysqli_query($conn, "SELECT * FROM borrowed_books WHERE id='$borrow_id' AND username='$username' ");
+    if($get && mysqli_num_rows($get) > 0){
+        $row = mysqli_fetch_assoc($get);
+        $book_title = $row['book_title'];
 
-    // Get book_id first
-    $get = mysqli_query($conn, "SELECT * FROM borrow WHERE id='$borrow_id'");
-    $row = mysqli_fetch_assoc($get);
-    $book_id = $row['book_id'];
+        // Update borrow status
+        mysqli_query($conn, "UPDATE borrowed_books SET status='returned' WHERE id='$borrow_id'");
 
-    // Update borrow status
-    mysqli_query($conn, "UPDATE borrow SET status='returned' WHERE id='$borrow_id'");
+        // Increase book quantity
+        mysqli_query($conn, "UPDATE books SET quantity = quantity + 1 WHERE title='$book_title'");
 
-    // Increase book quantity
-    mysqli_query($conn, "UPDATE books SET quantity = quantity + 1 WHERE id='$book_id'");
-
-    $message = "Book returned successfully!";
+        $message = "Book returned successfully!";
+    }
 }
 
-// 📌 FETCH BORROWED BOOKS
-$query = "SELECT borrow.id, books.title, books.author, borrow.borrow_date 
-          FROM borrow 
-          JOIN books ON borrow.book_id = books.id
-          WHERE borrow.username='$username' AND borrow.status='borrowed'";
+// 📌 FETCH BORROWED BOOKS (only not yet returned)
+$query = "SELECT username, bb.book_title, b.author, bb.borrow_date
+          FROM borrowed_books bb
+          JOIN books b ON bb.book_title = b.title
+          WHERE bb.username='$username'";
 
 $result = mysqli_query($conn, $query);
 ?>
@@ -52,7 +53,6 @@ $result = mysqli_query($conn, $query);
 <title>Return Book</title>
 
 <style>
-
 body {
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(rgba(74,20,140,0.7), rgba(106,27,154,0.7)),
@@ -61,72 +61,16 @@ body {
     margin: 0;
 }
 
-/* Container */
-.container {
-    padding: 40px;
-}
-
-/* Title */
-h1 {
-    color: white;
-    text-align: center;
-}
-
-/* Table */
-table {
-    width: 100%;
-    margin-top: 30px;
-    border-collapse: collapse;
-    background: rgba(255,255,255,0.9);
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-th, td {
-    padding: 12px;
-    text-align: center;
-}
-
-th {
-    background: #6a1b9a;
-    color: white;
-}
-
-tr:hover {
-    background: #f3e5f5;
-}
-
-/* Button */
-.btn {
-    padding: 8px 12px;
-    background: #e53935;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.btn:hover {
-    background: #c62828;
-}
-
-/* Back */
-.back-btn {
-    display: inline-block;
-    margin: 20px;
-    background: white;
-    color: #4a148c;
-    padding: 10px;
-    border-radius: 8px;
-    text-decoration: none;
-}
-
-.message {
-    text-align: center;
-    color: #fff;
-    margin-top: 10px;
-}
-
+.container { padding: 40px; }
+h1 { color: white; text-align: center; }
+table { width: 100%; margin-top: 30px; border-collapse: collapse; background: rgba(255,255,255,0.9); border-radius: 10px; overflow: hidden; }
+th, td { padding: 12px; text-align: center; }
+th { background: #6a1b9a; color: white; }
+tr:hover { background: #f3e5f5; }
+.btn { padding: 8px 12px; background: #e53935; color: white; border: none; border-radius: 6px; cursor: pointer; }
+.btn:hover { background: #c62828; }
+.back-btn { display: inline-block; margin: 20px; background: white; color: #4a148c; padding: 10px; border-radius: 8px; text-decoration: none; }
+.message { text-align: center; color: #fff; margin-top: 10px; }
 </style>
 </head>
 
@@ -149,15 +93,15 @@ tr:hover {
 </tr>
 
 <?php
-if(mysqli_num_rows($result) > 0){
+if($result && mysqli_num_rows($result) > 0){
     while($row = mysqli_fetch_assoc($result)){
         echo "
         <tr>
-            <td>{$row['title']}</td>
-            <td>{$row['author']}</td>
-            <td>{$row['borrow_date']}</td>
+            <td>".htmlspecialchars($row['book_title'])."</td>
+            <td>".htmlspecialchars($row['author'])."</td>
+            <td>".htmlspecialchars($row['borrow_date'])."</td>
             <td>
-                <a href='return_book.php?return_id={$row['id']}'>
+                <a href='return_book.php?return_id={$row['username']}'>
                     <button class='btn'>Return</button>
                 </a>
             </td>

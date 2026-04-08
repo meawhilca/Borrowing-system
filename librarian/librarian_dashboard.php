@@ -30,7 +30,7 @@ $students = mysqli_query($conn, "SELECT COUNT(*) AS total FROM users WHERE role=
 $total_students = mysqli_fetch_assoc($students)['total'];
 
 // Total borrowed
-$borrowed = mysqli_query($conn, "SELECT COUNT(*) AS total FROM borrow_records");
+$borrowed = mysqli_query($conn, "SELECT COUNT(*) AS total FROM borrow_records1");
 $total_borrowed = mysqli_fetch_assoc($borrowed)['total'];
 ?>
 
@@ -119,11 +119,11 @@ $total_borrowed = mysqli_fetch_assoc($borrowed)['total'];
 
         <?php
         $recent = mysqli_query($conn, "
-            SELECT users.username, books.title, borrow_records.borrow_date
-            FROM borrow_records
-            JOIN users ON borrow_records.username = users.username
-            JOIN books ON borrow_records.book_id = books.id
-            ORDER BY borrow_records.borrow_date DESC
+            SELECT users.username, books.title, borrow_records1.borrow_date
+            FROM borrow_records1
+            JOIN users ON borrow_records1.username = users.username
+            JOIN books ON borrow_records1.book_id = books.id
+            ORDER BY borrow_records1.borrow_date DESC
             LIMIT 5
         ");
 

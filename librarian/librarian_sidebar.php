@@ -11,7 +11,7 @@
     </div>
 
     <nav>
-        <a href="admin_dashboard.php" class="active">🏠 Dashboard</a>
+        <a href="librarian_dashboard.php" class="active">🏠 Dashboard</a>
         <a href="manage_books.php">📘 Manage Books</a>
         <a href="add_book.php">➕ Add Book</a>
         <a href="borrow_records.php">📖 Borrow Records</a>

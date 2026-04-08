@@ -7,10 +7,10 @@
 
     <p class="user">👤 <?php echo $_SESSION['username']; ?></p>
 
-    <a href="dashboard.php">🏠 Dashboard</a>
-    <a href="view_books.php">📚 View Books</a>
-    <a href="mybooks.php">📖 My Borrowed Books</a>
+    <a href="students_dashboard.php">🏠 Dashboard</a>
+    <a href="borrow_books.php">📖 Borrow Books</a>
     <a href="return_book.php">📚 Return Books</a>
+    <a href="borrowed_books.php">📖 Borrowed Books</a>
     <a href="profile.php">👤 Profile</a>
     <a href="../logout.php" class="logout">🚪 Logout</a>
 </div>

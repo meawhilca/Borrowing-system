@@ -37,7 +37,7 @@ if ($_SESSION['role'] !== 'student') {
 
         /* MAIN CONTENT */
         .main-content {
-            margin-left: 300px;
+            margin-left: 200px;
             padding: 100px;
             width: 100%;
             background: #f4f4f4;
@@ -97,8 +97,8 @@ if ($_SESSION['role'] !== 'student') {
 
         <p>Welcome, <strong><?php echo $_SESSION['username']; ?></strong>!</p>
 
-        <a class="button" href="view_books.php">📚 View Books</a>
-        <a class="button" href="mybooks.php">📖 My Borrowed Books</a>
+        <a class="button" href="borrowed_books.php">📚 Borrowed Books</a>
+        <a class="button" href="borrow_books.php">📖 Borrow Books</a>
     </div>
 
 </div>
