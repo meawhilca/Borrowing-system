@@ -30,7 +30,7 @@ $returned_books = mysqli_fetch_assoc(mysqli_query($conn,
 
 // 📖 Recent Records
 $records = mysqli_query($conn, 
-"SELECT * FROM borrow_records1 ORDER BY id DESC LIMIT 10");
+"SELECT * FROM borrow_summary2 ORDER BY id DESC LIMIT 10");
 ?>
 
 <!DOCTYPE html>
@@ -41,31 +41,10 @@ $records = mysqli_query($conn,
 </head>
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-    <div class="logo">
-        <h2>📚 Librarian</h2>
-        <p>Reports Panel</p>
-    </div>
-
-    <div class="user">
-        <span>👤</span>
-        <p><?php echo $_SESSION['username']; ?></p>
-    </div>
-
-    <nav>
-        <a href="admin_dashboard.php">🏠 Dashboard</a>
-        <a href="manage_books.php">📘 Manage Books</a>
-        <a href="add_book.php">➕ Add Book</a>
-        <a href="borrow_records.php">📖 Borrow Records</a>
-        <a href="students.php">🎓 Students</a>
-        <a href="reports.php" class="active">📊 Reports</a>
-        <a href="../logout.php" class="logout">🚪 Logout</a>
-    </nav>
-</div>
 
 <!-- MAIN CONTENT -->
 <div class="main-content">
+   
 
     <h1>📊 Library Reports</h1>
 
@@ -82,74 +61,9 @@ body {
     background-color: #f4f7f9;
     color: #333;
 }
-
-/* SIDEBAR */
-.sidebar {
-    width: 250px;
-    height: 100vh;
-    background-color: #1e1e2f;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    position: fixed;
-}
-
-.sidebar .logo h2 {
-    font-size: 24px;
-    margin-bottom: 5px;
-}
-
-.sidebar .logo p {
-    font-size: 14px;
-    color: #bbb;
-}
-
-.sidebar .user {
-    margin: 30px 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.sidebar .user span {
-    font-size: 24px;
-}
-
-.sidebar nav {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.sidebar nav a {
-    text-decoration: none;
-    color: #ccc;
-    padding: 10px 15px;
-    border-radius: 5px;
-    transition: 0.3s;
-}
-
-.sidebar nav a:hover, 
-.sidebar nav a.active {
-    background-color: #32324d;
-    color: #fff;
-}
-
-.sidebar nav a.logout {
-    margin-top: auto;
-    background-color: #ff4b5c;
-    color: #fff;
-    text-align: center;
-}
-
-.sidebar nav a.logout:hover {
-    background-color: #e43b4f;
-}
-
 /* MAIN CONTENT */
 .main-content {
-    margin-left: 270px;
+    margin-left: 180px;
     padding: 30px;
     width: calc(100% - 270px);
 }
@@ -301,8 +215,9 @@ table tr:hover {
     <?php while($row = mysqli_fetch_assoc($records)) { ?>
     <tr>
         <td><?php echo $row['id']; ?></td>
-        <td><?php echo htmlspecialchars($row['users']); ?></td>
-        <td><?php echo htmlspecialchars($row['books']); ?></td>
+       <td><?php echo htmlspecialchars($row['student_name']); ?></td>
+       <td><?php echo htmlspecialchars($row['book_title']); ?></td>
+       
         <td>
             <?php 
                if ($row['return_date'] == NULL) {
@@ -318,6 +233,9 @@ table tr:hover {
     </tr>
     <?php } ?>
 </table>
+<!-- Back Button -->
+    <a href="librarian_dashboard.php" class="back-btn">⬅ Back to Dashboard</a>
+
 
 </div>
 

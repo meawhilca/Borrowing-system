@@ -43,7 +43,7 @@ $total_borrowed = mysqli_fetch_assoc($borrowed)['total'];
 
     <style>
         .main {
-            margin-left: 230px;
+            margin-left: 300px;
             padding: 20px;
             font-family: Arial;
         }

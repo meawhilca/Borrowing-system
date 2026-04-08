@@ -15,12 +15,25 @@ if ($_SESSION['role'] != 'librarian') {
 }
 
 // 📌 Fetch all borrow records
-$query = "SELECT borrow.username, books.title, books.author, borrow.borrow_date, borrow.status
-          FROM borrow
-          JOIN books ON borrow.book_id = books.id
-          ORDER BY borrow.id DESC";
+$query = "SELECT 
+            users.username AS username,
+            books.title AS title,
+            books.author,
+            borrow_records1.borrow_date,
+            borrow_records1.return_date,
+            borrow_records1.status
+          FROM borrow_records1
+          JOIN users ON borrow_records1.student_id = users.id
+          JOIN books ON borrow_records1.book_id = books.id
+          ORDER BY borrow_records1.id DESC";
 
+// Execute query
 $result = mysqli_query($conn, $query);
+
+// ⚠️ Check query success
+if (!$result) {
+    die("Query failed: " . mysqli_error($conn));
+}
 ?>
 
 <!DOCTYPE html>
@@ -30,7 +43,7 @@ $result = mysqli_query($conn, $query);
 <title>Librarian - Borrow Records</title>
 
 <style>
-
+    
 body {
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(rgba(74,20,140,0.7), rgba(106,27,154,0.7)),
@@ -58,6 +71,7 @@ table {
     background: rgba(255,255,255,0.95);
     border-radius: 10px;
     overflow: hidden;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
 }
 
 th, td {
@@ -68,20 +82,21 @@ th, td {
 th {
     background: #6a1b9a;
     color: white;
+    font-size: 16px;
 }
 
 tr:hover {
     background: #f3e5f5;
 }
 
-/* Status */
+/* Status badges */
 .borrowed {
-    color: orange;
+    color: #ff9800;
     font-weight: bold;
 }
 
 .returned {
-    color: green;
+    color: #4caf50;
     font-weight: bold;
 }
 
@@ -91,11 +106,17 @@ tr:hover {
     margin: 20px;
     background: white;
     color: #4a148c;
-    padding: 10px;
+    padding: 10px 20px;
     border-radius: 8px;
     text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
 }
 
+.back-btn:hover {
+    background: #4a148c;
+    color: white;
+}
 </style>
 </head>
 
@@ -119,16 +140,14 @@ tr:hover {
 <?php
 if(mysqli_num_rows($result) > 0){
     while($row = mysqli_fetch_assoc($result)){
-
         $statusClass = ($row['status'] == 'returned') ? 'returned' : 'borrowed';
-
         echo "
         <tr>
-            <td>{$row['username']}</td>
-            <td>{$row['title']}</td>
-            <td>{$row['author']}</td>
-            <td>{$row['borrow_date']}</td>
-            <td class='$statusClass'>{$row['status']}</td>
+            <td>".htmlspecialchars($row['username'])."</td>
+            <td>".htmlspecialchars($row['title'])."</td>
+            <td>".htmlspecialchars($row['author'])."</td>
+            <td>".htmlspecialchars($row['borrow_date'])."</td>
+            <td class='$statusClass'>".htmlspecialchars($row['status'])."</td>
         </tr>
         ";
     }
