@@ -23,14 +23,26 @@ $total_students = mysqli_fetch_assoc(mysqli_query($conn,
 
 // ✅ FIXED HERE (NO STATUS COLUMN)
 $borrowed_books = mysqli_fetch_assoc(mysqli_query($conn, 
-"SELECT COUNT(*) as total FROM borrowed_books WHERE return_date IS NULL"))['total'];
+"SELECT COUNT(*) as total FROM borrowed_books WHERE status='borrowed'"))['total'];
 
 $returned_books = mysqli_fetch_assoc(mysqli_query($conn, 
-"SELECT COUNT(*) as total FROM borrowed_books WHERE return_date IS NOT NULL"))['total'];
+"SELECT COUNT(*) as total FROM borrowed_books WHERE status='returned'"))['total'];
 
 // 📖 Recent Records
 $records = mysqli_query($conn, 
-"SELECT * FROM borrowed_books ORDER BY id DESC LIMIT 10");
+"SELECT * FROM borrowed_books ORDER BY username DESC LIMIT 500");
+
+$query = "SELECT 
+            users.username AS username,
+            books.title AS title,
+            books.author,
+            borrowed_books.borrow_date,
+            borrowed_books.return_date,
+            borrowed_books.status
+          FROM borrowed_books
+          JOIN users ON borrowed_books.username = users.username
+          JOIN books ON borrowed_books.book_title = books.title
+          ORDER BY borrowed_books.id DESC";
 ?>
 
 <!DOCTYPE html>
@@ -215,7 +227,7 @@ table tr:hover {
     <?php while($row = mysqli_fetch_assoc($records)) { ?>
     <tr>
         <td><?php echo $row['id']; ?></td>
-       <td><?php echo htmlspecialchars($row['student_name']); ?></td>
+       <td><?php echo htmlspecialchars($row['username']); ?></td>
        <td><?php echo htmlspecialchars($row['book_title']); ?></td>
        
         <td>

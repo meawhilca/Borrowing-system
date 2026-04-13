@@ -36,21 +36,21 @@ if (isset($_GET['return_id'])) {
         $borrow_date = $row['borrow_date'];
 
         // 1. Insert into returned_books (HISTORY TABLE)
-      $stmt = $conn->prepare("
-    INSERT INTO returned_books (book_title, author, borrow_date, returned_date)
-    VALUES (?, ?, ?, NOW())
-");
+        $stmt = $conn->prepare("
+            INSERT INTO returned_books (book_title, author, borrow_date, returned_date)
+            VALUES (?, ?, ?, NOW())
+        ");
 
-$stmt->bind_param("sss", $title, $author, $borrow_date);
-$stmt->execute();
+        $stmt->bind_param("sss", $book_title, $author, $borrow_date);
+        $stmt->execute();
 
-        // 2. Update borrowed_books status
-       mysqli_query($conn, "
-    UPDATE returned_books
-    SET status = 'returned',
-        returned_date = NOW()
-    WHERE id = '$borrow_id'
-");
+        // 2. Update borrowed_books status (FIXED)
+        mysqli_query($conn, "
+            UPDATE borrowed_books 
+            SET status = 'returned'
+            WHERE id = '$borrow_id'
+        ");
+
         // 3. Increase book quantity
         mysqli_query($conn, "
             UPDATE books 
@@ -59,18 +59,17 @@ $stmt->execute();
         ");
 
         $message = "Book returned successfully!";
+        
     } else {
         $message = "Invalid return request!";
     }
 }
 
 // 📌 FETCH ONLY BORROWED BOOKS
-$query = "SELECT bb.id, bb.book_title, b.author, bb.borrow_date
+$query = "SELECT bb.id, bb.book_title, b.author, bb.borrow_date, bb.status
           FROM borrowed_books bb
           JOIN books b ON bb.book_title = b.title
-          WHERE bb.username='$username'
-
-";
+          WHERE bb.username='$username'";
 
 $result = mysqli_query($conn, $query);
 ?>
@@ -145,6 +144,11 @@ tr:hover {
     color: white;
     margin-top: 10px;
 }
+
+.deadline {
+    font-weight: bold;
+    color: #d32f2f;
+}
 </style>
 
 </head>
@@ -164,27 +168,38 @@ tr:hover {
     <th>Title</th>
     <th>Author</th>
     <th>Borrow Date</th>
+    <th>Deadline</th>
     <th>Action</th>
 </tr>
 
 <?php
 if ($result && mysqli_num_rows($result) > 0) {
     while ($row = mysqli_fetch_assoc($result)) {
-        echo "
-        <tr>
+
+        $borrow_date = $row['borrow_date'];
+
+        // 📌 DEADLINE = 7 days after borrow date
+        $deadline = date('Y-m-d', strtotime($borrow_date . ' +7 days'));
+
+        echo "<tr>
             <td>" . htmlspecialchars($row['book_title']) . "</td>
             <td>" . htmlspecialchars($row['author']) . "</td>
-            <td>" . htmlspecialchars($row['borrow_date']) . "</td>
-            <td>
-                <a href='return_book.php?return_id={$row['id']}'>
+            <td>" . htmlspecialchars($borrow_date) . "</td>
+            <td class='deadline'>$deadline</td>
+            <td>";
+
+        if ($row['status'] == 'returned') {
+            echo "<span style='color:green;font-weight:bold;'>Returned</span>";
+        } else {
+            echo "<a href='return_book.php?return_id={$row['id']}'>
                     <button class='btn'>Return</button>
-                </a>
-            </td>
-        </tr>
-        ";
+                  </a>";
+        }
+
+        echo "</td></tr>";
     }
 } else {
-    echo "<tr><td colspan='4'>No borrowed books.</td></tr>";
+    echo "<tr><td colspan='5'>No borrowed books.</td></tr>";
 }
 ?>
 
