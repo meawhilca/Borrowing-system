@@ -15,7 +15,7 @@
         <a href="manage_books.php">📘 Manage Books</a>
         <a href="add_book.php">➕ Add Book</a>
         <a href="borrow_records.php">📖 Borrow Records</a>
-        <a href="student_name.php">🎓 Students</a>
+        <a href="student_name.php">🎓 Students</a>  git
         <a href="reports.php">📊 Reports</a>
         <a href="../logout.php" class="logout">🚪 Logout</a>
     </nav>

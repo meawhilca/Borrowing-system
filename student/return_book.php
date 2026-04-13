@@ -10,38 +10,67 @@ if (!isset($_SESSION['username'])) {
 
 // 🔒 Only STUDENT
 if ($_SESSION['role'] != 'student') {
-    echo "<h3>Access denied.</h3>";
+    echo "Access denied.";
     exit();
 }
 
 $username = $_SESSION['username'];
 $message = "";
 
-// 📌 RETURN BOOK
-if(isset($_GET['return_username'])){
-    $borrow_id = $_GET['return_username'];
+// 📌 RETURN BOOK PROCESS
+if (isset($_GET['return_id'])) {
 
-    // Get book record first
-    $get = mysqli_query($conn, "SELECT * FROM borrowed_books WHERE id='$borrow_id' AND username='$username' ");
-    if($get && mysqli_num_rows($get) > 0){
-        $row = mysqli_fetch_assoc($get);
+    $borrow_id = $_GET['return_id'];
+
+    // Get borrowed book
+    $check = mysqli_query($conn, "
+        SELECT * FROM borrowed_books 
+        WHERE id='$borrow_id' AND username='$username'
+    ");
+
+    if (mysqli_num_rows($check) > 0) {
+
+        $row = mysqli_fetch_assoc($check);
         $book_title = $row['book_title'];
+        $author = $row['author'];
+        $borrow_date = $row['borrow_date'];
 
-        // Update borrow status
-        mysqli_query($conn, "UPDATE borrowed_books SET status='returned' WHERE id='$borrow_id'");
+        // 1. Insert into returned_books (HISTORY TABLE)
+      $stmt = $conn->prepare("
+    INSERT INTO returned_books (book_title, author, borrow_date, returned_date)
+    VALUES (?, ?, ?, NOW())
+");
 
-        // Increase book quantity
-        mysqli_query($conn, "UPDATE books SET quantity = quantity + 1 WHERE title='$book_title'");
+$stmt->bind_param("sss", $title, $author, $borrow_date);
+$stmt->execute();
+
+        // 2. Update borrowed_books status
+       mysqli_query($conn, "
+    UPDATE returned_books
+    SET status = 'returned',
+        returned_date = NOW()
+    WHERE id = '$borrow_id'
+");
+        // 3. Increase book quantity
+        mysqli_query($conn, "
+            UPDATE books 
+            SET quantity = quantity + 1 
+            WHERE title='$book_title'
+        ");
 
         $message = "Book returned successfully!";
+    } else {
+        $message = "Invalid return request!";
     }
 }
 
-// 📌 FETCH BORROWED BOOKS (only not yet returned)
-$query = "SELECT username, bb.book_title, b.author, bb.borrow_date
+// 📌 FETCH ONLY BORROWED BOOKS
+$query = "SELECT bb.id, bb.book_title, b.author, bb.borrow_date
           FROM borrowed_books bb
           JOIN books b ON bb.book_title = b.title
-          WHERE bb.username='$username'";
+          WHERE bb.username='$username'
+
+";
 
 $result = mysqli_query($conn, $query);
 ?>
@@ -54,24 +83,70 @@ $result = mysqli_query($conn, $query);
 
 <style>
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: Arial;
+    margin: 0;
     background: linear-gradient(rgba(74,20,140,0.7), rgba(106,27,154,0.7)),
                 url('https://images.unsplash.com/photo-1512820790803-83ca734da794')
                 no-repeat center/cover;
-    margin: 0;
 }
 
 .container { padding: 40px; }
+
 h1 { color: white; text-align: center; }
-table { width: 100%; margin-top: 30px; border-collapse: collapse; background: rgba(255,255,255,0.9); border-radius: 10px; overflow: hidden; }
-th, td { padding: 12px; text-align: center; }
-th { background: #6a1b9a; color: white; }
-tr:hover { background: #f3e5f5; }
-.btn { padding: 8px 12px; background: #e53935; color: white; border: none; border-radius: 6px; cursor: pointer; }
-.btn:hover { background: #c62828; }
-.back-btn { display: inline-block; margin: 20px; background: white; color: #4a148c; padding: 10px; border-radius: 8px; text-decoration: none; }
-.message { text-align: center; color: #fff; margin-top: 10px; }
+
+table {
+    width: 100%;
+    margin-top: 30px;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+}
+
+th {
+    background: #6a1b9a;
+    color: white;
+}
+
+tr:hover {
+    background: #f3e5f5;
+}
+
+.btn {
+    padding: 8px 12px;
+    background: #e53935;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #c62828;
+}
+
+.back-btn {
+    display: inline-block;
+    margin: 20px;
+    padding: 10px;
+    background: white;
+    color: #4a148c;
+    text-decoration: none;
+    border-radius: 8px;
+}
+
+.message {
+    text-align: center;
+    color: white;
+    margin-top: 10px;
+}
 </style>
+
 </head>
 
 <body>
@@ -93,15 +168,15 @@ tr:hover { background: #f3e5f5; }
 </tr>
 
 <?php
-if($result && mysqli_num_rows($result) > 0){
-    while($row = mysqli_fetch_assoc($result)){
+if ($result && mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
         echo "
         <tr>
-            <td>".htmlspecialchars($row['book_title'])."</td>
-            <td>".htmlspecialchars($row['author'])."</td>
-            <td>".htmlspecialchars($row['borrow_date'])."</td>
+            <td>" . htmlspecialchars($row['book_title']) . "</td>
+            <td>" . htmlspecialchars($row['author']) . "</td>
+            <td>" . htmlspecialchars($row['borrow_date']) . "</td>
             <td>
-                <a href='return_book.php?return_id={$row['username']}'>
+                <a href='return_book.php?return_id={$row['id']}'>
                     <button class='btn'>Return</button>
                 </a>
             </td>

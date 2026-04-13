@@ -23,14 +23,14 @@ $total_students = mysqli_fetch_assoc(mysqli_query($conn,
 
 // ✅ FIXED HERE (NO STATUS COLUMN)
 $borrowed_books = mysqli_fetch_assoc(mysqli_query($conn, 
-"SELECT COUNT(*) as total FROM borrow_records1 WHERE return_date IS NULL"))['total'];
+"SELECT COUNT(*) as total FROM borrowed_books WHERE return_date IS NULL"))['total'];
 
 $returned_books = mysqli_fetch_assoc(mysqli_query($conn, 
-"SELECT COUNT(*) as total FROM borrow_records1 WHERE return_date IS NOT NULL"))['total'];
+"SELECT COUNT(*) as total FROM borrowed_books WHERE return_date IS NOT NULL"))['total'];
 
 // 📖 Recent Records
 $records = mysqli_query($conn, 
-"SELECT * FROM borrow_summary2 ORDER BY id DESC LIMIT 10");
+"SELECT * FROM borrowed_books ORDER BY id DESC LIMIT 10");
 ?>
 
 <!DOCTYPE html>
@@ -58,7 +58,7 @@ $records = mysqli_query($conn,
 
 body {
     display: flex;
-    background-color: #f4f7f9;
+    background-color: #f7e4ff;
     color: #333;
 }
 /* MAIN CONTENT */
@@ -111,10 +111,10 @@ body {
 table {
     width: 100%;
     border-collapse: collapse;
-    background-color: #fff;
+    background-color: #fdbeff;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0px 4px 10px rgba(0,0,0,0.05);
+    box-shadow: 0px 4px 10px rgba(96, 32, 121, 0.97);
 }
 
 table th, table td {
@@ -123,12 +123,12 @@ table th, table td {
 }
 
 table th {
-    background-color: #1e1e2f;
+    background-color: #8654af;
     color: #fff;
 }
 
 table tr:nth-child(even) {
-    background-color: #f8f9fa;
+    background-color: #f8d7ff;
 }
 
 table tr:hover {
@@ -235,6 +235,33 @@ table tr:hover {
 </table>
 <!-- Back Button -->
     <a href="librarian_dashboard.php" class="back-btn">⬅ Back to Dashboard</a>
+<style>
+     .back-btn {
+    display: inline-block;
+    margin-top: 25px;
+    padding: 12px 22px;
+    background: linear-gradient(135deg, #6a1b9a, #4a148c);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    
+    }
+
+.back-btn:hover {
+    transform: translateY(-3px);
+    background: linear-gradient(135deg, #7b1fa2, #6a1b9a);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+.back-btn:active {
+    transform: scale(0.97);
+}
+
+}</style>
 
 
 </div>

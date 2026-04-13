@@ -19,13 +19,13 @@ $query = "SELECT
             users.username AS username,
             books.title AS title,
             books.author,
-            borrow_records1.borrow_date,
-            borrow_records1.return_date,
-            borrow_records1.status
-          FROM borrow_records1
-          JOIN users ON borrow_records1.student_id = users.id
-          JOIN books ON borrow_records1.book_id = books.id
-          ORDER BY borrow_records1.id DESC";
+            borrowed_books.borrow_date,
+            borrowed_books.return_date,
+            borrowed_books.status
+          FROM borrowed_books
+          JOIN users ON borrowed_books.username = users.username
+          JOIN books ON borrowed_books.book_title = books.title
+          ORDER BY borrowed_books.id DESC";
 
 // Execute query
 $result = mysqli_query($conn, $query);

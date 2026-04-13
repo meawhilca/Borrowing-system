@@ -30,7 +30,7 @@ $students = mysqli_query($conn, "SELECT COUNT(*) AS total FROM users WHERE role=
 $total_students = mysqli_fetch_assoc($students)['total'];
 
 // Total borrowed
-$borrowed = mysqli_query($conn, "SELECT COUNT(*) AS total FROM borrow_records1");
+$borrowed = mysqli_query($conn, "SELECT COUNT(*) AS total FROM borrowed_books");
 $total_borrowed = mysqli_fetch_assoc($borrowed)['total'];
 ?>
 
@@ -118,19 +118,24 @@ $total_borrowed = mysqli_fetch_assoc($borrowed)['total'];
         </tr>
 
         <?php
-        $recent = mysqli_query($conn, "
-            SELECT users.username, books.title, borrow_records1.borrow_date
-            FROM borrow_records1
-            JOIN users ON borrow_records1.username = users.username
-            JOIN books ON borrow_records1.book_id = books.id
-            ORDER BY borrow_records1.borrow_date DESC
-            LIMIT 5
-        ");
+       $recent = mysqli_query($conn, "
+      SELECT 
+       users.username AS username,
+       books.title AS book_title,
+       borrowed_books.borrow_date,
+       borrowed_books.return_date,
+       borrowed_books.status
+    FROM borrowed_books
+    JOIN users ON borrowed_books.username = users.username
+    JOIN books ON borrowed_books.book_title = books.title
+    ORDER BY borrowed_books.borrow_date DESC
+    LIMIT 5;
+    ");
 
         while($row = mysqli_fetch_assoc($recent)) {
             echo "<tr>
                     <td>{$row['username']}</td>
-                    <td>{$row['title']}</td>
+                    <td>{$row['book_title']}</td>
                     <td>{$row['borrow_date']}</td>
                   </tr>";
         }
