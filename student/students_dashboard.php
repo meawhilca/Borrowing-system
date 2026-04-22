@@ -31,52 +31,72 @@ if ($_SESSION['role'] !== 'student') {
     <style>
         body {
             margin: 0;
-            font-family: Arial;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
+            background: #f5f6fa;
         }
 
         /* MAIN CONTENT */
         .main-content {
             margin-left: 200px;
-            padding: 100px;
+            padding: 60px;
             width: 100%;
-            background: #f4f4f4;
             min-height: 100vh;
         }
 
         .card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
-            max-width: 500px;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 900px;
+        }
+
+        .card-content {
+            max-width: 50%;
+        }
+
+        .card img {
+            width: 300px;
         }
 
         h2 {
             color: #6a1b9a;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #555;
+            font-size: 16px;
         }
 
         .top-bar {
-            margin-bottom: 20px;
-            font-size: 25px;
-            shadow: 25px
-            color: #a047b6;
+            margin-bottom: 30px;
+            font-size: 18px;
+            color: #6a1b9a;
         }
 
         .button {
             display: inline-block;
-            margin-top: 10px;
+            margin-top: 15px;
             margin-right: 10px;
-            padding: 10px 20px;
+            padding: 12px 20px;
             background: #6a1b9a;
             color: white;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 8px;
+            transition: 0.3s;
         }
 
         .button:hover {
             background: #4a148c;
+            transform: translateY(-2px);
         }
+
     </style>
 </head>
 <body>
@@ -93,12 +113,14 @@ if ($_SESSION['role'] !== 'student') {
     </div>
 
     <div class="card">
-        <h2>🎓 Student Dashboard</h2>
+        <div class="card-content">
+            <h2>📚 BOOK LIBRARY</h2>
 
-        <p>Welcome, <strong><?php echo $_SESSION['username']; ?></strong>!</p>
+            <p>Welcome, <strong><?php echo $_SESSION['username']; ?></strong>! Explore and manage your books easily.</p>
 
-        <a class="button" href="borrowed_books.php">📚 Borrowed Books</a>
-        <a class="button" href="borrow_books.php">📖 Borrow Books</a>
+            <a class="button" href="borrowed_books.php">📚 Borrowed Books</a>
+            <a class="button" href="borrow_books.php">📖 Borrow Books</a>
+        </div>
     </div>
 
 </div>

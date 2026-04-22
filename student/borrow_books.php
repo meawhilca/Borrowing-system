@@ -23,7 +23,7 @@ if (isset($_POST['borrow'])) {
 
         $borrow_date = date("Y-m-d");
 
-        // 📌 ADD DUE DATE (7 days after borrow)
+        // 📌 ADD DUE DATE (7 days after approval, but we set now)
         $due_date = date("Y-m-d", strtotime($borrow_date . ' +7 days'));
 
         // ✅ Check if book exists
@@ -33,38 +33,31 @@ if (isset($_POST['borrow'])) {
 
             $book = mysqli_fetch_assoc($check);
 
-            // ❌ Prevent duplicate borrow (only active ones)
+            // ❌ Prevent duplicate request or borrow
             $dup = mysqli_query($conn, "
                 SELECT * FROM borrowed_books 
                 WHERE username='$username' 
                 AND book_title='$title'
-                AND status='borrowed'
+                AND (status='borrowed' OR status='pending')
             ");
 
             if (mysqli_num_rows($dup) > 0) {
-                echo "<script>alert('You already borrowed this book!');</script>";
+                echo "<script>alert('You already requested or borrowed this book!');</script>";
             } 
             else if ($book['quantity'] > 0) {
 
-                // ✅ INSERT WITH DUE DATE
+                // ✅ INSERT AS PENDING (NOT borrowed)
                 $stmt = $conn->prepare("
                     INSERT INTO borrowed_books 
                     (username, book_title, borrow_date, due_date, status)
-                    VALUES (?, ?, ?, ?, 'borrowed')
+                    VALUES (?, ?, ?, ?, 'pending')
                 ");
 
                 $stmt->bind_param("ssss", $username, $title, $borrow_date, $due_date);
                 $stmt->execute();
 
-                // 📉 reduce book quantity
-                mysqli_query($conn, "
-                    UPDATE books 
-                    SET quantity = quantity - 1 
-                    WHERE title='$title'
-                ");
-
                 echo "<script>
-                        alert('Book borrowed successfully!');
+                        alert('Request sent! Waiting for librarian approval.');
                         window.location='books.php';
                       </script>";
                 exit();
@@ -179,7 +172,7 @@ if(mysqli_num_rows($result) > 0){
             <input type="hidden" name="title" value="<?= htmlspecialchars($row['title'], ENT_QUOTES); ?>">
 
             <?php if ($row['quantity'] > 0): ?>
-                <button type="submit" name="borrow" class="borrow-btn">Borrow</button>
+                <button type="submit" name="borrow" class="borrow-btn">Request</button>
             <?php else: ?>
                 <p class="not-available">Not Available</p>
             <?php endif; ?>

@@ -21,7 +21,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 220px;
+    width: 200px;
     height: 100%;
     background: linear-gradient(180deg, #6a1b9a, #4a148c);
     color: white;
