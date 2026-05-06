@@ -107,7 +107,7 @@ body, html {
         <h1>📚 Welcome to Our Library</h1>
         <p>Access books, borrow easily, and manage your reading.</p>
         <a class="button" href="login.php">Login</a>
-        <a class="button" href="register.php">Create Account</a>>
+        <a class="button" href="register.php">Create Account</a>
     
     </div>
 </div>
