@@ -3,7 +3,7 @@ session_start();
 include("../db.php");
 
 // 🔒 Only librarian
-if ($_SESSION['role'] != 'librarian') {
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'librarian') {
     echo "Access denied";
     exit();
 }
@@ -12,15 +12,14 @@ if ($_SESSION['role'] != 'librarian') {
 if (isset($_GET['approve'])) {
     $id = intval($_GET['approve']);
 
-    $get = mysqli_query($conn, "SELECT * FROM borrowed_books WHERE id=$id");
+    $get = mysqli_query($conn, "SELECT book_id FROM borrowed_books WHERE id=$id");
     $data = mysqli_fetch_assoc($get);
 
     if ($data) {
-        $title = $data['book_title'];
+        $book_id = $data['book_id'];
 
         mysqli_query($conn, "UPDATE borrowed_books SET status='borrowed' WHERE id=$id");
-
-        mysqli_query($conn, "UPDATE books SET quantity = quantity - 1 WHERE title='$title'");
+        mysqli_query($conn, "UPDATE books SET quantity = quantity - 1 WHERE id=$book_id");
     }
 
     header("Location: manage_requests.php");
@@ -38,7 +37,16 @@ if (isset($_GET['reject'])) {
 }
 
 // 📋 FETCH REQUESTS
-$result = mysqli_query($conn, "SELECT * FROM borrowed_books WHERE status='pending'");
+$query = "
+    SELECT 
+        borrowed_books.*, 
+        books.book_title
+    FROM borrowed_books
+    JOIN books ON borrowed_books.book_id = books.id
+    WHERE borrowed_books.status='pending'
+";
+
+$result = mysqli_query($conn, $query);
 ?>
 
 <!DOCTYPE html>
@@ -54,7 +62,6 @@ body {
     min-height: 100vh;
 }
 
-/* Container */
 .container {
     max-width: 1100px;
     margin: 40px auto;
@@ -64,14 +71,28 @@ body {
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
-/* Title */
 h2 {
     text-align: center;
     color: #4a148c;
-    margin-bottom: 25px;
+    margin-bottom: 10px;
 }
 
-/* Table */
+/* 🔙 Back button */
+.back-btn {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 8px 14px;
+    background: #5e35b1;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    background: #4527a0;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -91,12 +112,10 @@ td {
     border-bottom: 1px solid #ddd;
 }
 
-/* Row hover */
 tr:hover {
     background: #f3e5f5;
 }
 
-/* Buttons */
 .btn {
     padding: 6px 12px;
     border: none;
@@ -124,13 +143,11 @@ tr:hover {
     background: #c62828;
 }
 
-/* Action spacing */
 .action-btns a {
     text-decoration: none;
     margin-right: 5px;
 }
 
-/* Empty message */
 .empty {
     text-align: center;
     padding: 20px;
@@ -143,9 +160,12 @@ tr:hover {
 
 <div class="container">
 
+<!-- 🔙 Back Button -->
+<a href="librarian_dashboard.php" class="back-btn">⬅ Back to Dashboard</a>
+
 <h2>📚 Borrow Requests</h2>
 
-<?php if (mysqli_num_rows($result) > 0): ?>
+<?php if ($result && mysqli_num_rows($result) > 0): ?>
 <table>
 <tr>
     <th>Student</th>
@@ -157,7 +177,7 @@ tr:hover {
 
 <?php while($row = mysqli_fetch_assoc($result)) { ?>
 <tr>
-    <td><?= htmlspecialchars($row['username']); ?></td>
+    <td><?= htmlspecialchars($row['username'] ?? 'N/A'); ?></td>
     <td><?= htmlspecialchars($row['book_title']); ?></td>
     <td><?= htmlspecialchars($row['borrow_date']); ?></td>
     <td><?= htmlspecialchars($row['due_date']); ?></td>

@@ -3,7 +3,7 @@
 $host = "localhost";
 $username = "root";
 $password = "";
-$database = "library_db";
+$database = "library_system";
 
 $conn = mysqli_connect($host, $username, $password, $database);
 
